@@ -1,0 +1,5 @@
+/.idea
+/.ssh
+/.vagrant
+/vendor
+Homestead.yaml
