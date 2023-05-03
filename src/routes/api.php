@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\TestController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,6 +29,13 @@ Route::get('categories', [CategoryController::class, 'getCategories']);
 Route::get('category/{category_id}/books', [BookController::class, 'getBooksByCategory']);
 Route::get('book/{id}', [BookController::class, 'getBookById']);
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::group(['middleware'=>'auth:sanctum'], function(){
+    Route::get('/user', [UserController::class, 'getIndex']);
+    Route::post('email/verify', [AuthController::class, 'postVerifyEmail']);
+});
+
+
+/* controller for testing */
+Route::group(['prefix'=>'test'], function(){
+    Route::any('send-email', [TestController::class, 'sendVerification']);
 });

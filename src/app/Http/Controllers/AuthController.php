@@ -9,7 +9,7 @@ use App\Repositories\Interfaces\UserRepositoryInterface;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\LoginRequest;
 use Illuminate\Validation\ValidationException;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Str;
 use App\Traits\ApiResponse;
 
 class AuthController extends Controller
@@ -23,7 +23,7 @@ class AuthController extends Controller
         $this->userRepository = $userRepository;
     }
 
-    public function postRegister(RegistrationRequest $request) :JsonResponse
+    public function postRegister(RegistrationRequest $request)
     {
         /* registered account
          email dimonnyse@gmail.com
@@ -35,10 +35,11 @@ class AuthController extends Controller
             'name' => $requestData['name'],
             'email' => $requestData['email'],
             'password' => Hash::make($requestData['password']),
-            'phone' => $requestData['phone']
+            'phone' => $requestData['phone'],
+            'remember_token' => Str::random(64)
         ];
 
-        return $this->successResponse($this->userRepository->createUser($userDetails));
+        return new UserResource($this->userRepository->createUser($userDetails));
     }
 
     public function postLogin(LoginRequest $request)
@@ -59,9 +60,19 @@ class AuthController extends Controller
         }
     }
 
-    public function postLogout(Request $request) :JsonResponse
+    public function postVerifyEmail(Request $request)
     {
-        $logout = $request->user('sanctum')->tokens()->delete();
-        return $this->successResponse((bool)$logout);
+        $user = $request->user('sanctum');
+        $verified = false;
+
+        if($request->token === $user->remember_token){
+            $verified = !empty($this->userRepository->verifyEmail($user->id));
+        }
+        return $this->successResponse($verified);
+    }
+
+    public function postLogout(Request $request)
+    {
+        return $this->successResponse((boolean)$request->user('sanctum')->tokens()->delete());
     }
 }

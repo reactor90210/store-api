@@ -9,6 +9,8 @@ class CategoryLocation extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['category_id', 'location_id'];
+
     public $location;
 
     public function categories()
