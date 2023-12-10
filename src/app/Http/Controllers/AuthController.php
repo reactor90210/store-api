@@ -8,9 +8,9 @@ use App\Http\Requests\RegistrationRequest;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\LoginRequest;
-use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Str;
 use App\Traits\ApiResponse;
+use App\Services\AuthService;
 
 class AuthController extends Controller
 {
@@ -25,10 +25,6 @@ class AuthController extends Controller
 
     public function postRegister(RegistrationRequest $request)
     {
-        /* registered account
-         email dimonnyse@gmail.com
-         password 010203fdFF@
-         */
         $requestData = $request->all();
 
         $userDetails = [
@@ -42,22 +38,15 @@ class AuthController extends Controller
         return new UserResource($this->userRepository->createUser($userDetails));
     }
 
-    public function postLogin(LoginRequest $request)
+    public function postLogin(LoginRequest $request, AuthService $auth)
     {
         $credentials = $request->only('email', 'password');
-        $user = $this->userRepository->getUserByEmail($credentials['email']);
+        $user = $auth->login($credentials['email'], $credentials['password']);
 
-        if(!empty($user) && Hash::check($credentials['password'], $user->password)){
-            return (new UserResource($user))->additional(['meta' => [
-                'access_token' => $user->createToken('authToken')->plainTextToken,
-                'token_type'=> 'Bearer'
-            ]]);
-        }
-        else{
-            throw ValidationException::withMessages([
-                'email' => ['The provided credentials are incorrect.'],
-            ]);
-        }
+        return (new UserResource($user))->additional(['token' => [
+            'value' => $user->createToken('authToken')->plainTextToken,
+            'type'=> 'Bearer'
+        ]]);
     }
 
     public function postVerifyEmail(Request $request)

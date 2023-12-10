@@ -16,6 +16,7 @@ class CreateBooksTable extends Migration
         Schema::create('books', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->string('slug')->unique();
             $table->string('image')->default('image.png');
             $table->float('price', 8, 2);
             $table->unsignedTinyInteger('discount')->nullable();

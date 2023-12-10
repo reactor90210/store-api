@@ -18,4 +18,8 @@ class BookRepository implements BookRepositoryInterface
     public function getBookById($bookId){
         return Book::with('authors')->find($bookId);
     }
+
+    public function getBookBySlug($slug){
+        return Book::with('authors')->where('slug', $slug)->first();
+    }
 }

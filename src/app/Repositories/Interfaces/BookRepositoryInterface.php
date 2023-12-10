@@ -6,4 +6,5 @@ interface BookRepositoryInterface
 {
     public function getBooksByCategory($categoryId);
     public function getBookById($bookId);
+    public function getBookBySlug($slug);
 }

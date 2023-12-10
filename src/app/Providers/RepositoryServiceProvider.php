@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use App\Repositories\Interfaces\BookRepositoryInterface;
 use App\Repositories\BookRepository;
+use App\Repositories\Interfaces\OrderRepositoryInterface;
+use App\Repositories\OrderRepository;
 use Illuminate\Support\ServiceProvider;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\Repositories\UserRepository;
@@ -36,6 +38,10 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(
             CategoryLocationRepositoryInterface::class,
             CategoryLocationRepository::class
+        );
+        $this->app->bind(
+            OrderRepositoryInterface::class,
+            OrderRepository::class
         );
     }
 

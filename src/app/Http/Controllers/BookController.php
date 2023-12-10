@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Resources\BookCollection;
 use App\Http\Resources\BookResource;
 use App\Repositories\Interfaces\BookRepositoryInterface;
-use Illuminate\Http\Request;
 
 class BookController extends Controller
 {
@@ -22,5 +21,9 @@ class BookController extends Controller
 
     public function getBookById($id){
         return new BookResource($this->bookRepository->getBookById($id));
+    }
+
+    public function getBookBySlug($slug){
+        return new BookResource($this->bookRepository->getBookBySlug($slug));
     }
 }

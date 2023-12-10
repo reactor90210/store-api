@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class BookCollection extends ResourceCollection
+class BookCollection extends PaginatedCollection
 {
     /**
      * Transform the resource collection into an array.
@@ -14,6 +14,15 @@ class BookCollection extends ResourceCollection
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+
+            // Here we transform any item in paginated items to a resource
+
+            'data' => $this->collection->transform(function ($book) {
+                return new BookResource($book);
+            }),
+
+            'pagination' => $this->pagination,
+        ];
     }
 }

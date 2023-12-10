@@ -7,6 +7,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\CheckoutController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,12 +27,15 @@ Route::group(['prefix'=>'auth'], function(){
 });
 
 Route::get('categories', [CategoryController::class, 'getCategories']);
-Route::get('category/{category_id}/books', [BookController::class, 'getBooksByCategory']);
-Route::get('book/{id}', [BookController::class, 'getBookById']);
+//Route::get('category/{category_id}/books', [CategoryController::class, 'getCategoryById']);
+Route::get('category/{slug}/books', [CategoryController::class, 'getCategoryBySlug']);
+//Route::get('book/{id}', [BookController::class, 'getBookById']);
+Route::get('book/{slug}', [BookController::class, 'getBookBySlug']);
 
 Route::group(['middleware'=>'auth:sanctum'], function(){
-    Route::get('/user', [UserController::class, 'getIndex']);
+    Route::get('user', [UserController::class, 'getIndex']);
     Route::post('email/verify', [AuthController::class, 'postVerifyEmail']);
+    Route::post('checkout', [CheckoutController::class, 'postIndex']);
 });
 
 

@@ -11,10 +11,7 @@ class CategoryRepository implements CategoryRepositoryInterface
 {
     public function getCategories(){
         return CategoryLocation::with(['categories' => function($query){
-            $query->with(['subCategories', /*'books' => function($booksQuery){
-                $booksQuery->wherePivot('category_id', '=', DB::raw("(SELECT id from categories where name='best sellers')"));
-                $booksQuery->with('authors');
-            }*/]);
+            $query->with(['subCategories.category']);
         }])->get();
     }
 
@@ -22,6 +19,29 @@ class CategoryRepository implements CategoryRepositoryInterface
         return $this->getCategories()->mapToGroups(function ($item, $key) {
             return [CategoryLocationCollection::$locationMap[$item['location_id']] => $item->categories];
         })->all();
+    }
+
+    public function getCategoryById($id, $page){
+        $limit = 15;
+
+        return Category::with(['books' => function($query) use ($page, $limit){
+            $query->skip(($page-1)*$limit)
+                ->limit($limit);
+        }])
+            ->withCount('books' )
+            ->find($id);
+    }
+
+    public function getCategoryBySlug($slug, $page){
+        $limit = 15;
+
+        return Category::with(['books' => function($query) use ($page, $limit){
+            $query->skip(($page-1)*$limit)
+                ->limit($limit);
+        }])
+            ->withCount('books' )
+            ->where('slug', $slug)
+            ->first();
     }
 
     public function getParentCategories(){

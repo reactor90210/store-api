@@ -7,13 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Category extends Model
 {
-    protected $fillable = ['name', 'parent_id'];
+    protected $fillable = ['name', 'slug'];
 
     use HasFactory;
 
     public function subCategories()
     {
-        return $this->hasMany(self::class, 'parent_id')->with('subCategories');
+        return $this->hasMany(CategorySubcategory::class, 'category_parent_id');//->with('subCategories');
     }
 
     public function parentCategory()

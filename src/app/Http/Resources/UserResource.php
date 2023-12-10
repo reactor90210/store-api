@@ -19,7 +19,8 @@ class UserResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'phone' => $this->phone,
-            'email_verified_at' => $this->email_verified_at?->format('Y-m-d H:i:s')
+            'email_verified_at' => $this->email_verified_at?->format('Y-m-d H:i:s'),
+            'orders' => OrderResource::collection($this->whenLoaded('orders'))
         ];
     }
 }

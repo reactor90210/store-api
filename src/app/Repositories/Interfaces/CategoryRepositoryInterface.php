@@ -5,6 +5,8 @@ namespace App\Repositories\Interfaces;
 interface CategoryRepositoryInterface
 {
     public function getCategories();
+    public function getCategoryById($category_id, $page);
+    public function getCategoryBySlug($slug, $page);
     public function getParentCategories();
     public function getCategoryWithParent($id);
     public function getCategoriesWithParent();

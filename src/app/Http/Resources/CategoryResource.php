@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class CategoryResource extends JsonResource
 {
@@ -18,8 +19,15 @@ class CategoryResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'subCategories' => self::collection($this->whenLoaded('subCategories')),
-            'books' => BookResource::collection($this->whenLoaded('books'))
+            'slug' => $this->slug,
+            'subCategories' => CategorySubcategoryResource::collection($this->whenLoaded('subCategories')),
+            'books' => new BookCollection(
+                new LengthAwarePaginator(
+                    $this->whenLoaded('books'),
+                    $this->books_count,
+                    15
+                )
+            )
         ];
     }
 }

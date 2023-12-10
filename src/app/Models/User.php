@@ -48,4 +48,9 @@ class User extends Authenticatable
     {
         $this->notify(new VerifyEmailQueued());
     }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
 }
